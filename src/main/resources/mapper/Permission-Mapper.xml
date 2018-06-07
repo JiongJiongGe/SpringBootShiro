@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shiro.mapper.PermissionMapper">
+
+    <sql id="tableName">
+        t_permission
+    </sql>
+
+    <sql id="selectColumns">
+        *
+    </sql>
+
+    <select id="queryList" parameterType="java.util.List" resultType="com.shiro.entity.PermissionDo">
+        SELECT
+        <include refid="selectColumns" />
+        FROM
+        <include refid="tableName" />
+        WHERE `id` in
+        <foreach collection="ids" item="item" index="index"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="queryByUrl" parameterType="string" resultType="com.shiro.entity.PermissionDo">
+        SELECT
+        <include refid="selectColumns" />
+        FROM
+        <include refid="tableName" />
+        WHERE url = #{url}
+    </select>
+</mapper>
