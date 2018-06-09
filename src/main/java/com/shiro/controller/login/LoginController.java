@@ -1,7 +1,7 @@
-package com.shiro.controller;
+package com.shiro.controller.login;
 
-import com.shiro.config.shiro.ShiroCustomToken;
-import com.shiro.config.shiro.ShiroLoginType;
+import com.shiro.config.shiro.matcher.ShiroCustomToken;
+import com.shiro.config.shiro.matcher.enumconstant.ShiroLoginType;
 import com.shiro.controller.common.BaseController;
 import com.shiro.response.ErrorCode;
 import com.shiro.response.RpcResult;

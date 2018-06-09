@@ -1,6 +1,5 @@
-package com.shiro.config.shiro;
+package com.shiro.config.shiro.filter;
 
-import com.google.gson.Gson;
 import com.shiro.config.shiro.bean.SavedRequestBean;
 import com.shiro.entity.PermissionDo;
 import com.shiro.sevice.PermissionService;
@@ -13,40 +12,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.jnlp.PersistenceService;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
- * @Intro:
+ * @Intro: 自定义判断权限filter
  * @Author: WangJiongDa(yunkai)
  * @Date: 2018/6/1
  * @Time: 下午4:55
  */
-public class MyFilter extends AccessControlFilter {
+public class ShiroCustomAccessFilter extends AccessControlFilter {
 
-    private static Logger logger = LoggerFactory.getLogger(MyFilter.class);
+    private static Logger logger = LoggerFactory.getLogger(ShiroCustomAccessFilter.class);
 
-    public static final String DEFAULT_LOGIN_URL = "/login.jsp";
-    public static final String GET_METHOD = "GET";
-    public static final String POST_METHOD = "POST";
     private String loginUrl = "/login";
 
-    private static final String noPermissUrl = "/shiro/no/permission";
+    private static final String noPermissUrl = "/no/permission";
 
     @Autowired
     private PermissionService permissionService;
 
     @Override
     protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
-        HttpServletRequest httpRequest = WebUtils.toHttp(servletRequest);
-        String actionUrl = WebUtils.getRequestUri(httpRequest);
         Subject subject = SecurityUtils.getSubject();
-        PermissionDo permission = permissionService.getByUrl(actionUrl);
-        logger.info("yunkai = {}, actionUrl = {}", getPathWithinApplication(servletRequest), actionUrl);
-        if(loginUrl.equals(getPathWithinApplication(servletRequest)) || (noPermissUrl.equals(getPathWithinApplication(servletRequest))) || subject.isPermitted(permission.getPermissionMessage())){
+        logger.info("action url = {}", getPathWithinApplication(servletRequest));
+        if(loginUrl.equals(getPathWithinApplication(servletRequest)) || (noPermissUrl.equals(getPathWithinApplication(servletRequest))) || checkPermission(servletRequest, subject)){
             return true;
         }
         return false;
@@ -70,15 +62,29 @@ public class MyFilter extends AccessControlFilter {
             session.setAttribute("savedRequestBean", savedRequestBean);
             saveRequestAndRedirectToLogin(servletRequest, servletResponse);
         } else{
-            String actionUrl = WebUtils.getRequestUri(httpRequest);
-            PermissionDo permission = permissionService.getByUrl(actionUrl);
-            logger.info("url = {}", subject.isPermitted(permission.getPermissionMessage()));
-            if(!subject.isPermitted(permission.getPermissionMessage())){
+            if(!checkPermission(servletRequest, subject)){
                 WebUtils.issueRedirect(servletRequest, servletResponse, noPermissUrl);
             } else {
                 return false;
             }
         }
        return false;
+    }
+
+    /**
+     * 验证用户权限
+     *
+     * @param servletRequest
+     * @param subject
+     * @return
+     */
+    private boolean checkPermission(ServletRequest servletRequest, Subject subject){
+        HttpServletRequest request = WebUtils.toHttp(servletRequest);
+        String actionUrl = WebUtils.getRequestUri(request);
+        PermissionDo permission = permissionService.getByUrl(actionUrl);
+        if(subject.isPermitted(permission.getPermissionMessage())){
+            return true;
+        }
+        return false;
     }
 }

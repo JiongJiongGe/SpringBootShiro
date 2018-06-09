@@ -1,5 +1,6 @@
-package com.shiro.config.shiro;
+package com.shiro.config.shiro.matcher;
 
+import com.shiro.config.shiro.matcher.enumconstant.ShiroLoginType;
 import org.apache.shiro.authc.UsernamePasswordToken;
 
 /**
@@ -10,7 +11,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
  */
 public class ShiroCustomToken extends UsernamePasswordToken {
 
-    private ShiroLoginType type;
+    private ShiroLoginType type;   //是否需要密码登录类型
 
 
     public ShiroCustomToken(String userName, String password, ShiroLoginType type) {

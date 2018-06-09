@@ -1,6 +1,5 @@
-package com.shiro.config.shiro;
+package com.shiro.config.shiro.realm;
 
-import com.google.gson.Gson;
 import com.shiro.entity.*;
 import com.shiro.sevice.*;
 import org.apache.shiro.authc.AuthenticationException;
@@ -15,11 +14,13 @@ import org.apache.shiro.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 安全数据源，设置用户的角色和权限
+ */
 public class ShiroRealm extends AuthorizingRealm {
 
     private static Logger logger = LoggerFactory.getLogger(ShiroRealm.class);
@@ -40,7 +41,7 @@ public class ShiroRealm extends AuthorizingRealm {
     private PermissionService permissionService;
 
     /**
-     * 授权验证
+     * 授权权限验证
      *
      * @param principals
      * @return
@@ -85,13 +86,17 @@ public class ShiroRealm extends AuthorizingRealm {
         return authorizationInfo;
     }
 
-    /*主要是用来进行身份认证的，也就是说验证用户输入的账号和密码是否正确。*/
+    /**
+     * 验证用户是否认证
+     * @param token
+     * @return
+     * @throws AuthenticationException
+     */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
             throws AuthenticationException {
         //获取传入的用户ID.
         String userID = (String)token.getPrincipal();
-        System.out.println(token.getCredentials());
         //根据用户ID获取对象，若存在。则验证成功
         UserDo userDo = userService.getByID(userID);
         if(userDo == null){

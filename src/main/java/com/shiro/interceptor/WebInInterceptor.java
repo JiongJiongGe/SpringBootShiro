@@ -1,7 +1,13 @@
 package com.shiro.interceptor;
 
+import com.google.gson.Gson;
+import com.shiro.entity.UserDo;
+import com.shiro.sevice.PermissionService;
+import com.shiro.sevice.UserService;
+import com.shiro.util.token.ParseTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,7 +26,9 @@ public class WebInInterceptor implements HandlerInterceptor{
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-        logger.info("preHandle in");
+        String X_userToken = httpServletRequest.getHeader("X_userToken");
+        Integer userID = ParseTokenUtil.parse(X_userToken);
+        httpServletRequest.setAttribute("userID", userID);
         return true;
     }
 

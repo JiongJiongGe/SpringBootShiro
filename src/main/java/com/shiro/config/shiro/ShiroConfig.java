@@ -1,7 +1,7 @@
 package com.shiro.config.shiro;
 
-import org.apache.shiro.authc.Authenticator;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import com.shiro.config.shiro.filter.ShiroCustomAccessFilter;
+import com.shiro.config.shiro.realm.ShiroRealm;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -9,22 +9,16 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import javax.servlet.Filter;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @Configuration
 public class ShiroConfig {
 
 	@Bean
 	public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
-		System.out.println("ShiroConfiguration.shirFilter()");
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
 		/**
@@ -32,7 +26,7 @@ public class ShiroConfig {
 		 */
 		Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
 		Map<String, Filter> filters = new LinkedHashMap<>();
-		filters.put("authc", myFilter());
+		filters.put("authc", getCustomAccessFilter());
 		filterChainDefinitionMap.put("/shiro/filer", "anon");
 		filterChainDefinitionMap.put("/logout", "logout");
 		filterChainDefinitionMap.put("/**", "authc");
@@ -44,11 +38,11 @@ public class ShiroConfig {
 		/**
 		 * 配置验证成功后跳转的路径
 		 */
-		shiroFilterFactoryBean.setSuccessUrl("/index");
+		//shiroFilterFactoryBean.setSuccessUrl("/index");
 		/**
 		 * 未经授权跳转的路径
 		 */
-		shiroFilterFactoryBean.setUnauthorizedUrl("/shiro/no/permission");
+		//shiroFilterFactoryBean.setUnauthorizedUrl("/shiro/no/permission");
 		shiroFilterFactoryBean.setFilters(filters);
 		return shiroFilterFactoryBean;
 	}
@@ -65,15 +59,8 @@ public class ShiroConfig {
 	}
 
 	@Bean
-	public MyFilter myFilter(){
-		return new MyFilter();
-	}
-
-	@Bean
-	public FilterRegistrationBean registration(MyFilter filter) {
-		FilterRegistrationBean registration = new FilterRegistrationBean(filter);
-		registration.setEnabled(false);
-		return registration;
+	public ShiroCustomAccessFilter getCustomAccessFilter(){
+		return new ShiroCustomAccessFilter();
 	}
 
 	/**

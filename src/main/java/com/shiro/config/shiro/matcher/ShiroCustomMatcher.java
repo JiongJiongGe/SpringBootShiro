@@ -1,5 +1,6 @@
-package com.shiro.config.shiro;
+package com.shiro.config.shiro.matcher;
 
+import com.shiro.config.shiro.matcher.enumconstant.ShiroLoginType;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;

@@ -48,4 +48,15 @@ public class BaseController {
         }
         return reqParams;
     }
+
+    /**
+     * 获取登录用户ID
+     *
+     * @param request
+     * @return
+     */
+    protected Integer getUserId(HttpServletRequest request){
+        Integer userID = (Integer) request.getAttribute("userID");
+        return userID;
+    }
 }

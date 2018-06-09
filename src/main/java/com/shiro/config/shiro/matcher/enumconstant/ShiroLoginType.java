@@ -1,4 +1,4 @@
-package com.shiro.config.shiro;
+package com.shiro.config.shiro.matcher.enumconstant;
 
 /**
  * @Intro:  shiro 登陆方式枚举类

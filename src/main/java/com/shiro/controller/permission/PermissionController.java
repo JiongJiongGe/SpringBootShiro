@@ -1,5 +1,6 @@
-package com.shiro.controller;
+package com.shiro.controller.permission;
 
+import com.shiro.controller.common.BaseController;
 import com.shiro.response.ErrorCode;
 import com.shiro.response.RpcResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("/shiro")
-public class ShiroController {
+public class PermissionController extends BaseController{
 
     /**
      * 权限不足
